@@ -11,6 +11,10 @@
 #include "stm32f0xx_ll_exti.h"
 #include "stm32f0xx_ll_utils.h"
 #include "stm32f0xx_ll_cortex.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "time.h"
+
 
 #define FLASH_0LAT_DELAY0LAT
 
@@ -273,6 +277,13 @@ void izthif( int num)
 	return;	
 	
 }
+
+void gen_sequence()
+{
+	srand(time(NULL));
+	int num = rand() % 512;
+}
+
 
 int main(void)
 {
