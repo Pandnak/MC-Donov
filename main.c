@@ -13,7 +13,6 @@
 #include "stm32f0xx_ll_cortex.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "time.h"
 
 
 #define FLASH_0LAT_DELAY0LAT
@@ -125,7 +124,7 @@ static void timers_config(void)
 void TIM2_IRQHandler(void)
 {
 
-	m++;
+	m += 1;
     LL_TIM_ClearFlag_UPDATE(TIM2);
 }
 
@@ -278,22 +277,47 @@ void izthif( int num)
 	
 }
 
+void dec_to_bin(int num, int* s[9])
+{
+     int v = 256;
+     for(int i = 0; i <= 8; i++)
+     {
+             if(num >= v)
+             {
+                    *s[8 - i] = 1;
+                    num -= v;
+             }
+             else
+                 *s[8- i] = 0;
+
+             v /= 2;
+     }
+}
+
 void gen_sequence()
 {
-	srand(time(NULL));
-	int num = rand() % 512;
+	//int s[9];
+	int num = rand() % 1024;
+	izthif(num);
+	for (int i = 0; i < 1000; ++i)
+		delay();
+	//dec_to_bin(num, &s);
+	//for (int i = 0; i <= 8; ++i)
+	//	printf("%d", s[i]);
 }
 
 
 int main(void)
 {
-    rcc_config(); 
-    gpio_config();
-	exti_config();
-	timers_config();
+    rcc_config(); //настройка тактирования
+    gpio_config(); //настройка выводов
+    exti_config(); //настройка прерываний
+    timers_config(); //настройка таймеров
     
+    //вывод числа m на семисегментник
     while (1) {	
-		izthif(m);
+		//izthif(m);
+		gen_sequence();
     }
     return 0;
 }
