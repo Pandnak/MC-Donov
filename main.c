@@ -17,7 +17,7 @@
 
 #define FLASH_0LAT_DELAY0LAT
 
-int m = 1234;
+int record = 0;
 
 
 
@@ -123,17 +123,12 @@ static void timers_config(void)
 }
 void TIM2_IRQHandler(void)
 {
-
-	m += 1;
     LL_TIM_ClearFlag_UPDATE(TIM2);
 }
 
 void EXTI0_1_IRQHandler(void)
 {
-   
-	m++;
-
-	LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_8);
+    LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_8);
 
     LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_0);
 }
@@ -294,17 +289,40 @@ void dec_to_bin(int num, int* s[9])
      }
 }
 
-void gen_sequence()
+int my_random(int a, int b)
 {
-	//int s[9];
-	int num = rand() % 1024;
-	izthif(num);
+	return (a + rand() % (b - a + 1));
+}
+
+void gen_sequence(int min_blink, int max_blink, int reaction, int delay_time)
+{
+	int count_blinks = my_random(min_blink, max_blink);
+	for(int i = 0; i < count_blinks; ++i)
+	{
+		inter_time[i] = my_random(100, delay_time + 100);
+		min_time[i] = inter_time[i] - reaction;
+		max_time[i] = inter_time[i] + reaction;
+	}
+	for (int i = 0; i < count_blinks; ++i)
+	{
+		LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_10);
+		delay(inter_time[i]);
+		LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_10);
+	}
+}
+
+void blinkingLight()
+{
+	LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_10);
 	for (int i = 0; i < 1000; ++i)
 		delay();
-	//dec_to_bin(num, &s);
-	//for (int i = 0; i <= 8; ++i)
-	//	printf("%d", s[i]);
+    	
+	LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_10);
+	for (int i = 0; i < 1000; ++i)
+		delay();
 }
+
+
 
 
 int main(void)
@@ -316,8 +334,9 @@ int main(void)
     
     //вывод числа m на семисегментник
     while (1) {	
-		//izthif(m);
-		gen_sequence();
+		izthif(record);
+		//blinkingLight();
+		//gen_sequence();
     }
     return 0;
 }
