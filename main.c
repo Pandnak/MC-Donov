@@ -10,22 +10,21 @@
 #include "stm32f0xx_ll_tim.h"
 #include "stdio.h"
 #include "stdlib.h"
-int round = 2; 
+int num_round = 2; 
 int boolean = 0; 
 int gameRound = 0; // текущий раунд игры
 int win = 0; // количетво побед
-int difficulty = 150; //это кажись 1.5с 
+int difficulty = 150; //это 1.5с 
 int tim2 = 0;
 int stop = 1; 
 
 uint32_t time1 = 0, time2 = 0, timePrav1 = 0;  
 int m = 0; 
 int massTime[]= {0,0,0,0,0,0,0,0,0,0,0,0};
-int index = 0;
 
 int randMass[] = {200,200,200,200,200,200,0,0,0,0,0,0}; // рандомный массив
-int GameMassUp[] = {300,300,300,300,300,300,0,0,0,0,0,0};// верхние пределы нажатия кнопки 
-int GameMassDown[] = {100,100,100,100,100,100,0,0,0,0,0,0}; // нижние пределы нажатия кнопки 
+long unsigned int GameMassUp[] = {300,300,300,300,300,300,0,0,0,0,0,0};// верхние пределы нажатия кнопки 
+long unsigned int GameMassDown[] = {100,100,100,100,100,100,0,0,0,0,0,0}; // нижние пределы нажатия кнопки 
 
 int gameOn = 0; // включить игору: 0 - выкл, 1 - предпоказ, 2 - увидел надо начать, 3 - сама игра  
 
@@ -46,7 +45,7 @@ int gameOn = 0; // включить игору: 0 - выкл, 1 - предпок
   *    PLLMUL                         = 12
   *    Flash Latency(WS)              = 1
   */
-static void rcc_config()
+static void rcc_config(void)
 {
     /* Set FLASH latency */
 #if defined(FLASH_0LAT_DELAY0LAT) || defined(FLASH_0LAT_DELAY1LAT)
@@ -292,12 +291,12 @@ static void timers_config(void)
     NVIC_SetPriority(TIM3_IRQn, 0);
     return;
 }
-void Rand()
+void Rand(void)
  {
 	 LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_9);
 	
 	 
-	  for (int i = 0; i < round; i++) 
+	  for (int i = 0; i < num_round; i++) 
 	  {
 			/*randMass[2*i] = rand()%300 + 200;
 			GameMassUp[2*i] = randMass[2*i] + difficulty;
@@ -322,13 +321,13 @@ void Rand()
 				timeNow = tim2; 
 		   } 
 		   
-		   if (i == round*2) flag = 0; 
+		   if (i == num_round*2) flag = 0; 
 	   }
 	   LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_9);
 	   LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_10);
 
  }	
- void Rand2()
+ void Rand2(void)
  {
 	
 	  int timeNow = tim2;
@@ -345,7 +344,7 @@ void Rand()
 	   LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_8);
 
  }	
-  void Rand3()
+  void Rand3(void)
  {
 	
 	  int timeNow = tim2;
@@ -429,7 +428,7 @@ void TIM2_IRQHandler(void)
 					time1 = LL_TIM_IC_GetCaptureCH1(TIM2);
 
 					gameRound++; 
-					if (gameRound == round*2 && stop!=0) 
+					if (gameRound == num_round*2 && stop!=0) 
 					{
 						izthif(m);
 						m = m+1;
@@ -463,7 +462,7 @@ void TIM3_IRQHandler(void)
     LL_TIM_ClearFlag_UPDATE(TIM3);
 }
 
- int cnop()
+ int cnop(void)
  {
  	int count = 0; 
  	
@@ -489,11 +488,11 @@ int main(void)
     while (1) {
 	
 		
-		int status = LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_0);
+		long unsigned int status = LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_0);
 		if (status == 0)  flag =1; 
 		izthif(m);
 		if (status && flag) { 
-		if (cnop(m)) m++;
+		if (cnop()) m++;
 		flag = 0; 
 		}
 		

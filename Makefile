@@ -58,7 +58,7 @@ MCUFLAGS = -mcpu=cortex-m0 -mlittle-endian -mfloat-abi=soft -mthumb \
 
 DEBUG_OPTIMIZE_FLAGS = -O0 -ggdb -gdwarf-2
 
-CFLAGS = -Wall -Wextra --pedantic
+CFLAGS = -Werror -Wall -Wextra --pedantic -Wnarrowing -Wconversion -Wwrite-strings -Wcast-qual -Wundef -Wstrict-prototypes -Wbad-function-cast -Wlogical-op -Wreturn-type
 CFLAGS_EXTRA = -nostartfiles -nodefaultlibs -nostdlib \
                -fdata-sections -ffunction-sections
 
