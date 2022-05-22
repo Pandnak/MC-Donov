@@ -554,7 +554,7 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __RBIT(uint32_t value)
 #define __CLZ             __builtin_clz
 
 
-
+#if (defined(__CORTEX_M) && (__CORTEX_M >= 0x03U)) || (defined(__CORTEX_SC) && (__CORTEX_SC >= 300U))
 /**
   \brief   LDR Exclusive (8 bit)
   \details Executes a exclusive LDR instruction for 8 bit value.
