@@ -8,6 +8,7 @@
 #include "stm32f0xx_ll_bus.h"
 #include "stm32f0xx_ll_gpio.h"
 #include "stm32f0xx_ll_tim.h"
+#include "stm32f0xx_ll_dac.h" 
 #include "stdio.h"
 #include "stdlib.h"
 int num_round = 2; 
@@ -291,6 +292,18 @@ static void timers_config(void)
     NVIC_SetPriority(TIM3_IRQn, 0);
     return;
 }
+
+void my_rand(void)
+{
+        RCC->APB1ENR |= RCC_APB1ENR_DACEN;   
+
+        DAC->CR |= DAC_CR_TEN1; // включение запуска от события, по умолчанию таймер 6
+        DAC->CR |= DAC_CR_DMAEN1;        // запуск DMA
+        DAC->CR |= DAC_CR_TSEL1_0;      // вкл. генератор шума
+
+        DAC->CR |= DAC_CR_EN1;                // вкл. ЦАП 1
+}
+
 void Rand(void)
  {
 	 LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_9);
